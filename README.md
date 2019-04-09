@@ -19,6 +19,5 @@ Easy as that!
 
 # Screenshots
 ---
-## EmailGen
 ![](https://raw.githubusercontent.com/navisecdelta/EmailGen/master/screenshots/emailgen.png)
 
