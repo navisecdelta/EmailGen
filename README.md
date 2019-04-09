@@ -20,5 +20,5 @@ Easy as that!
 # Screenshots
 ---
 ## EmailGen
-![](https://raw.githubusercontent.com/navisecdelta/EmailGen/master/screenshots/EmailGen.png)
+![](https://raw.githubusercontent.com/navisecdelta/EmailGen/master/screenshots/emailgen.png)
 
