@@ -29,6 +29,11 @@ optparse = OptionParser.new do|opts|
         options[:domain] = domain
     end
 
+    options[:location] = false
+    opts.on( '-l', '--location New Jersey', 'Location to search profiles for' ) do|location|
+        options[:location] = location
+    end
+
     options[:format] = false
     opts.on( '-f', '--format "{first}.{last}@{domain}"', 'Format of email' ) do|email_format|
         options[:format] = email_format
@@ -59,7 +64,7 @@ Author: pry0cc | NaviSec Delta | delta.navisec.io
     }
     puts banner
     puts "[*] Initializing EmailGen..."
-    egen = CredE.new(options[:domain], options[:company], options[:format])
+    egen = CredE.new(options[:domain], options[:company], options[:format], location=options[:location])
 
     puts "[+] Starting scan against #{options[:company]}"
     emails = egen.scan()

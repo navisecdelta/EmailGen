@@ -1,8 +1,9 @@
 class CredE
-    def initialize(domain, company, email_format)
+    def initialize(domain, company, email_format, location=false)
         @email_format = email_format
         @domain = domain
         @company = company
+        @location = location
         @agent = Mechanize.new
         @agent.user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36'
     end
@@ -21,7 +22,15 @@ class CredE
 
     def pull(start = 1)
         data = {}
-        html = @agent.get("https://www.bing.com/search?q=site%3Awww.linkedin.com%2Fin%20%22#{@company}%22&first=#{start}&afj=100&FORM=PERE").body
+        search_query = "site%3Awww.linkedin.com%2Fin%20%22#{@company}%22"
+
+        if @location
+            search_query += "%20%22#{@location}%22"
+        end
+
+        search_url = "https://www.bing.com/search?q=#{search_query}&first=#{start}&afj=100&FORM=PERE"
+
+        html = @agent.get(search_url).body
         page = Nokogiri::HTML(html)
         data['count'] = page.css('.sb_count').text
         data['names'] = []
