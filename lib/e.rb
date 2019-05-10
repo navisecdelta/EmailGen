@@ -21,7 +21,7 @@ class CredE
 
     def pull(start = 1)
         data = {}
-        html = @agent.get("https://www.bing.com/search?q=site%3Alinkedin.com%2Fin%20%22#{@company}%22&first=#{start}&afj=100&FORM=PERE").body
+        html = @agent.get("https://www.bing.com/search?q=site%3Awww.linkedin.com%2Fin%20%22#{@company}%22&first=#{start}&afj=100&FORM=PERE").body
         page = Nokogiri::HTML(html)
         data['count'] = page.css('.sb_count').text
         data['names'] = []
