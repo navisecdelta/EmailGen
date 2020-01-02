@@ -14,6 +14,8 @@ EmailGen is for Email generation, similar to https://github.com/byt3bl33d3r/Spra
 ./EmailGen.rb -c "Company, Inc" -d "company.com" -f "{f}{last}@{domain}" -o company_emails.txt
 ```
 
+If you load tokens.rb with your hunter api key, you can just use the -d parameter and it will pull the rest automatically.
+
 Easy as that!
 
 
