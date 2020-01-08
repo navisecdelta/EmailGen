@@ -1,4 +1,4 @@
-class CredE
+class EmailGen
   def initialize(domain, company, email_format, location = false)
     @email_format = email_format
     @domain = domain
@@ -60,7 +60,9 @@ class CredE
     results = []
     initial_pull = pull(1)
     results.push(*initial_pull["names"])
-    total = 300
+
+    # total = 300
+    total = (initial_pull["count"].gsub(",", "").to_i / 9)
 
     # Ended up hard-coding this - if you can find a better way please tell me
     current_page = initial_pull["names"].length - 1

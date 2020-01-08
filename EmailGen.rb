@@ -54,6 +54,12 @@ optparse = OptionParser.new do |opts|
     options[:autodetect] = true
   end
 
+  options[:results] = false
+
+  opts.on("-r", "--results", "Results levels") do
+    options[:results] = true
+  end
+
   options[:outfile] = false
 
   opts.on("-o", "--outfile emails.txt", "File to save the results") do |outfile|
@@ -81,45 +87,58 @@ end
 optparse.parse!
 
 if options[:domain]
-  banner = " _____                 _ _  ____\n| ____|_ __ ___   __ _(_) |/ ___| ___ _ __\n|  _| | '_ ` _ \\ / _` | | | |  _ / _ \\ '_ \\\n| |___| | | | | | (_| | | | |_| |  __/ | | |\n|_____|_| |_| |_|\\__,_|_|_|\\____|\\___|_| |_|\n\nAuthor: pry0cc | NaviSec Delta | delta.navisec.io\n    "
-  puts(banner)
+  puts(" _____                 _ _  ____\n| ____|_ __ ___   __ _(_) |/ ___| ___ _ __\n|  _| | '_ ` _ \\ / _` | | | |  _ / _ \\ '_ \\\n| |___| | | | | | (_| | | | |_| |  __/ | | |\n|_____|_| |_| |_|\\__,_|_|_|\\____|\\___|_| |_|\n\nAuthor: pry0cc | NaviSec Delta | delta.navisec.io\n    ")
   puts("[*] Initializing EmailGen...")
-
-  if true
-    puts("[+] Autodetect enabled!")
+  load_tokens = false
+  begin
     require "./tokens.rb"
 
-    hunter = Hunter.new(@hunter_key)
-    pre_format = hunter.get_format(options[:domain])
-
-    if pre_format
-      options[:format] = pre_format + "@{domain}"
-      puts("Detected format from hunter as '#{options[:format]}'")
-    else
-      puts("[-] Autodetection from hunter failed, please specify a format")
-      exit
-    end
-
-    company = company_name(options[:domain])
-
-    if company
-      options[:company] = company
-      puts("Detected name as '#{company}'")
-    else
-      puts("[-] Autodetection of company name failed, please specify domain")
-      exit
-    end
-
-  elsif options[:format]
-    puts("Using user-specified format as #{options[:format]}")
-  elsif options[:company]
-    puts("Using user-specified company name as #{options[:company]}")
-  else
-    puts("[-] Format or autodetect not specified")
-    exit
+    load_tokens = true
+  rescue LoadError
   end
 
-  egen = CredE.new(options[:domain], options[:company], options[:format], location = options[:location])
+  if @hunter_key
+    puts("[+] Autodetect enabled!")
+
+    if !options[:format]
+      hunter = Hunter.new(@hunter_key)
+      pre_format = hunter.get_format(options[:domain])
+
+      if pre_format
+        options[:format] = pre_format + "@{domain}"
+        puts("Detected format from hunter as '#{options[:format]}'")
+      else
+        puts("[-] Autodetection from hunter failed, please specify a format")
+        exit
+      end
+
+    else
+      puts("Using user-specified format as #{options[:format]}")
+    end
+
+    if !options[:company]
+      company = company_name(options[:domain])
+
+      if company
+        options[:company] = company
+        puts("Detected name as '#{company}'")
+      else
+        puts("[-] Autodetection of company name failed, please specify domain")
+        exit
+      end
+
+    else
+      puts("Using user-specified company name as #{options[:company]}")
+    end
+
+  else
+    if !options[:company] or !options[:format]
+      puts("[-] Tokens could not be loaded, please either create it or specify --company and --format")
+      exit
+    end
+  end
+
+  egen = EmailGen.new(options[:domain], options[:company], options[:format], location = options[:location])
   puts("[+] Starting scan against #{options[:company]}")
   emails = egen.scan
   puts("[*] Scan complete! Generated #{emails.length} emails!")
